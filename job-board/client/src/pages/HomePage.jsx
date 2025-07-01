@@ -1,7 +1,11 @@
+import React, { useEffect } from 'react';
 import JobList from '../components/JobList';
-import { jobs } from '../lib/fake-data';
+import { getJobs } from '../components/queries';
 
 function HomePage() {
+  const [jobs, setJobs] = React.useState([]);
+  useEffect(() => {getJobs().then(setJobs)}, []);
+
   return (
     <div>
       <h1 className="title">
