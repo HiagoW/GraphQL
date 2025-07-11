@@ -22,9 +22,11 @@ export const resolvers = {
     },
 
     Mutation: {
-        createJob: (_root, { input: { title, description } }) => {
-            const companyId = 'FjcJCHJALA4i';
-            return createJob({ companyId, title, description })
+        createJob: (_root, { input: { title, description } }, { user }) => {
+            if (!user) {
+                throw new unauthorizedError("Missing authentication")
+            }
+            return createJob({ companyId: user.companyId, title, description })
         },
         deleteJob: (_root, { id }) => deleteJob(id),
         updateJob: (_root, { input: { id, title, description } }) => {
@@ -45,6 +47,12 @@ export const resolvers = {
 function notFoundError(message) {
     return new GraphQLError(message, {
         extensions: { code: 'NOT_FOUND' }
+    })
+}
+
+function unauthorizedError(message) {
+    return new GraphQLError(message, {
+        extensions: { code: 'UNAUTHORIZED' }
     })
 }
 
